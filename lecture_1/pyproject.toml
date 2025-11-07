@@ -1,0 +1,21 @@
+[project]
+name = "innowise-laboratory"
+version = "0.1.0"
+description = "lecture_1"
+requires-python = ">=3.12"
+authors = [
+    { name = "bluecjioh" },
+]
+license = { text = "Proprietary" }
+keywords = ["education", "colorama", "terminal", "innowise"]
+dependencies = [
+    "colorama==0.4.6",
+]
+
+[project.urls]
+homepage = "https://github.com/bluecjioh/innowise_laboratory"
+repository = "https://github.com/bluecjioh/innowise_laboratory"
+
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
