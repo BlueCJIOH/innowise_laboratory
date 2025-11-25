@@ -49,9 +49,12 @@ def parse_choice(raw: str) -> int | None:
 
     Returns:
         Parsed integer choice or None if invalid.
+
+    Raises:
+        ValueError: When the input cannot be converted to int.
     """
     try:
-        return int(raw.strip())
+        return int(raw.strip()) # normalize raw input value
     except ValueError:
         raise ValueError("Invalid input. Please enter a number.")
 
@@ -71,7 +74,11 @@ def parse_grade(raw: str) -> int | None:
     raw = raw.strip()
     if raw.lower() == "done":
         return None
-    value = validate_grade(raw)
+    try:
+        value = int(raw) # normalize raw input value
+    except ValueError as e:
+        raise ValueError("Invalid input. Please enter a number.") from e
+
     return value
 
 
@@ -82,58 +89,54 @@ def normalize_name(raw: str) -> str | None:
         raw: Raw user input.
 
     Returns:
-        Cleaned name string or None if empty after trimming.
+        Cleaned name string.
+
+    Raises:
+        ValueError: If the name is empty after trimming.
     """
     name = " ".join(raw.split())
     if not name:
-        return None
+        raise ValueError("Name cannot be empty.")
     return name
 
 
-def validate_name(raw: str) -> str:
+def validate_name(value: str) -> str:
     """Validates and returns a normalized student name.
 
     Args:
-        raw: Raw user input.
+        value: Normalized name value.
 
     Returns:
         Cleaned name string.
 
     Raises:
-        ValueError: If the name is empty after trimming or contains invalid characters.
+        ValueError: If the name is incorrect.
     """
-    name = normalize_name(raw)
-    if not name:
-        raise ValueError("Name cannot be empty.")
-    if not STUDENT_NAME_PATTERN.fullmatch(name):
+    if not STUDENT_NAME_PATTERN.fullmatch(value):
         raise ValueError(
             "Name must start with a capital letter and contain only letters, spaces, apostrophes, or hyphens."
         )
-    return name
+    return value
 
 
-def validate_grade(raw: str) -> int:
-    """Validates and converts a grade string to int within [0, 100].
+def validate_grade(value: int) -> int:
+    """Validates a grade integer within [0, 100].
 
     Args:
-        raw: Grade input string.
+        value: Grade value.
 
     Returns:
         Parsed grade integer.
 
     Raises:
-        ValueError: If not a number or out of allowed range.
+        ValueError: If grade is outside the allowed range.
     """
-    try:
-        value = int(raw)
-    except ValueError as e:
-        raise ValueError("Invalid input. Please enter a number.") from e
     if value < 0 or value > 100:
         raise ValueError("Grade must be between 0 and 100.")
     return value
 
 
-def get_student_by_name(name: str, students: list[Student]) -> Student:
+def get_student_by_name(name: str, students: list[Student]) -> Student | None:
     """Returns student by name (case-insensitive) if present.
 
     Args:
@@ -141,14 +144,15 @@ def get_student_by_name(name: str, students: list[Student]) -> Student:
         students: Collection of student records.
 
     Returns:
-        Matching student or None if not found.
+        Matching student or None when absent.
     """
     target = name.casefold()
+
     for student in students:
         if student["name"].casefold() == target:
             return student
 
-    raise LookupError("Student not found.")
+    return None
 
 
 def get_average_grade(grades: list[int]) -> float | None:
@@ -204,61 +208,22 @@ def get_top_performer(students: list[Student]) -> tuple[Student, float] | None:
     return best_student, best_avg
 
 
-def add_grades_for_student(student: Student) -> None:
-    """Prompts for grades and appends them to the given student.
+def add_grade_for_student(grade: int, student: Student) -> None:
+    """Adds a validated grade to the given student record.
 
     Args:
+        grade: Student grade
         student: Student record to update.
     """
-    while True:
-        raw = input("Enter a grade (or 'done' to finish): ")
-        try:
-            grade = parse_grade(raw)
-        except ValueError as e:
-            print(f"Error: {e}")
-            continue
-        if grade is None:
-            break
-        student["grades"].append(grade)
+    student["grades"].append(grade)
 
 
-def add_student(students: list[Student]) -> None:
-    """Adds a new student.
-
-    Args:
-        students: Collection of student records to modify.
-
-    Raises:
-        ValueError: If the name is empty or already exists.
-    """
-    raw = input("Enter student name: ")
-
-    name = validate_name(raw)
-
+def add_student(name: str, students: list[Student]) -> None:
+    """Appends a new student to the collection if absent."""
     if get_student_by_name(name, students):
         raise ValueError("Student already exists.")
 
     students.append(Student(name=name, grades=[]))
-    print(f"Student {name} added.")
-
-
-def add_grades(students: list[Student]) -> None:
-    """Adds grades for a student.
-
-    Args:
-        students: Collection of student records.
-
-    Raises:
-        ValueError: If name is empty.
-        LookupError: If student does not exist.
-    """
-    raw = input("Enter student name: ")
-
-    name = validate_name(raw)
-
-    student = get_student_by_name(name, students)
-    if student:
-        add_grades_for_student(student)
 
 
 def aggregate_stats(students: list[Student]) -> tuple[float, float, float] | None:
@@ -310,14 +275,64 @@ def do_report(students: list[Student]) -> list[str]:
     return lines
 
 
+def do_add_student(students: list[Student]) -> None:
+    """Adds a new student.
+
+    Args:
+        students: Collection of student records to modify.
+
+    Raises:
+        ValueError: If the name is empty or already exists.
+    """
+    raw = input("Enter student name: ")
+    name = normalize_name(raw)
+
+    validated_name = validate_name(name)
+    add_student(validated_name, students)
+
+    print(f"Student {name} added.")
+
+
+def do_add_grades(students: list[Student]) -> None:
+    """Adds grades for a student.
+
+    Args:
+        students: Collection of student records.
+
+    Raises:
+        ValueError: If name is empty.
+        LookupError: If student does not exist.
+    """
+    raw = input("Enter student name: ")
+    name = normalize_name(raw)
+    validated_name = validate_name(name)
+
+    student = get_student_by_name(validated_name, students)
+    if not student:
+        raise LookupError("Student not found.")
+
+    while True:
+        raw = input("Enter a grade (or 'done' to finish): ")
+        try:
+            grade = parse_grade(raw)
+        except ValueError as e:
+            print(f"Error: {e}")
+            continue
+        if grade is None:
+            break
+        validated_grade = validate_grade(grade)
+
+        add_grade_for_student(validated_grade, student)
+
+
 def do_exit()-> None:
     """Exits the program."""
     print("Exiting program.")
     exit(1)
 
 
-def print_report(students: list[Student]) -> None:
-    """Shows the full report.
+def do_print_report(students: list[Student]) -> None:
+    """Prints the full report.
 
     Args:
         students: Collection of student records.
@@ -326,8 +341,8 @@ def print_report(students: list[Student]) -> None:
         print(line)
 
 
-def print_top_performer(students: list[Student]) -> None:
-    """Shows the top performer.
+def do_get_top_performer(students: list[Student]) -> None:
+    """Prints the top performer.
 
     Args:
         students: Collection of student records.
@@ -351,10 +366,10 @@ def action_registry(students: list[Student]) -> dict[int, Callable[[], None]]:
         Mapping of menu choice integers to handler callables.
     """
     return {
-        MenuOptionEnum.ADD_STUDENT.value: lambda: add_student(students),
-        MenuOptionEnum.ADD_GRADES.value: lambda: add_grades(students),
-        MenuOptionEnum.SHOW_REPORT.value: lambda: print_report(students),
-        MenuOptionEnum.SHOW_TOP_PERFORMER.value: lambda: print_top_performer(students),
+        MenuOptionEnum.ADD_STUDENT.value: lambda: do_add_student(students),
+        MenuOptionEnum.ADD_GRADES.value: lambda: do_add_grades(students),
+        MenuOptionEnum.SHOW_REPORT.value: lambda: do_print_report(students),
+        MenuOptionEnum.SHOW_TOP_PERFORMER.value: lambda: do_get_top_performer(students),
         MenuOptionEnum.EXIT.value: lambda: do_exit()
     }
 
