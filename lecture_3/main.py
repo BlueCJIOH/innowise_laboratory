@@ -328,7 +328,7 @@ def do_add_grades(students: list[Student]) -> None:
 def do_exit()-> None:
     """Exits the program."""
     print("Exiting program.")
-    exit(1)
+    exit(0)
 
 
 def do_print_report(students: list[Student]) -> None:
@@ -382,7 +382,7 @@ def main() -> None:
         print(f"\n{MENU_TEXT}")
         try:
             choice = parse_choice(input("Enter your choice: "))
-            handler = actions.get(choice, lambda: print(NotImplementedError("Warning: Invalid choice.")))
+            handler = actions.get(choice, lambda: print("Warning: Invalid choice."))
             handler()
         except (ValueError, LookupError) as e:
             print(f"Error: {e}")
