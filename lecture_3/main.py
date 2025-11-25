@@ -310,6 +310,12 @@ def do_report(students: list[Student]) -> list[str]:
     return lines
 
 
+def do_exit()-> None:
+    """Exits the program."""
+    print("Exiting program.")
+    exit(1)
+
+
 def print_report(students: list[Student]) -> None:
     """Shows the full report.
 
@@ -333,12 +339,6 @@ def print_top_performer(students: list[Student]) -> None:
 
     student, avg = result
     print(f"The student with the highest average is {student['name']} with a grade of {avg:.1f}.")
-
-
-def do_exit()-> None:
-    """Exits the program."""
-    print("Exiting program.")
-    exit(1)
 
 
 def action_registry(students: list[Student]) -> dict[int, Callable[[], None]]:
