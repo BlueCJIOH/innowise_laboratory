@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 
 from book_api.domain.errors import BookNotFound
 from book_api.domain.entities import Book
