@@ -1,0 +1,55 @@
+[project]
+name = "book-api"
+version = "0.1.0"
+description = "Simple Book Collection API with FastAPI and SQLAlchemy"
+requires-python = ">=3.10"
+authors = [
+    { name = "bluecjioh" },
+]
+license = { text = "Proprietary" }
+keywords = ["fastapi", "sqlalchemy", "book-api", "innowise", "punq"]
+dependencies = [
+    "fastapi==0.111.0",
+    "uvicorn[standard]==0.30.1",
+    "sqlalchemy==2.0.30",
+    "pydantic-settings==2.3.4",
+    "punq==0.7.0",
+]
+
+[project.urls]
+homepage = "https://github.com/bluecjioh/innowise_laboratory"
+repository = "https://github.com/bluecjioh/innowise_laboratory"
+
+[dependency-groups]
+dev = [
+    "ruff==0.5.0",
+    "pytest==8.2.2",
+    "pytest-asyncio==0.23.7",
+    "polyfactory==2.16.0",
+    "httpx==0.27.0",
+]
+
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "W191",  # indentation contains tabs
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["book_api/tests"]
