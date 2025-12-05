@@ -2,7 +2,7 @@ import random
 
 from book_api.domain.entities import Book
 from book_api.domain.services import IBookService
-from book_api.tests.mocks.factories import BookFactory
+from tests.mocks.factories import BookFactory
 
 
 class DummyBookService(IBookService):

@@ -1,6 +1,9 @@
 import punq
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from book_api.domain.services import IBookService
 from book_api.domain.use_cases import (
@@ -11,21 +14,32 @@ from book_api.domain.use_cases import (
     UpdateBookUseCase,
 )
 from book_api.gateways.sqlite.database import Database
+from book_api.gateways.sqlite.models import BaseORM
 from book_api.gateways.sqlite.repositories import IBookRepository, SQLiteBookRepository
 from book_api.services.book import BookService
-from book_api.tests.mocks.services import DummyBookService
+from tests.mocks.services import DummyBookService
 from book_api.main import web_app_factory
 from book_api.api.v1.dependencies import get_container
 
 
-TEST_DATABASE_URL = "sqlite:///:memory:"
+def create_test_database() -> Database:
+    db = Database.__new__(Database)
+    db.engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    db._session_factory = sessionmaker(bind=db.engine, autocommit=False, autoflush=False)
+    db._tables_created = False
+    BaseORM.metadata.create_all(bind=db.engine)
+    db._tables_created = True
+    return db
 
 
 def create_test_container() -> punq.Container:
     container = punq.Container()
 
-    test_db = Database(url=TEST_DATABASE_URL)
-    test_db.create_tables()
+    test_db = create_test_database()
     container.register(Database, instance=test_db)
 
     container.register(IBookRepository, SQLiteBookRepository)
@@ -53,6 +67,8 @@ def mock_test_container() -> punq.Container:
 
 @pytest.fixture
 def client(test_container):
+    get_container.cache_clear()
+
     app = web_app_factory()
     app.dependency_overrides[get_container] = lambda: test_container  # type: ignore[index]
 
@@ -60,3 +76,4 @@ def client(test_container):
         yield client
 
     app.dependency_overrides.clear()  # type: ignore[union-attr]
+    get_container.cache_clear()

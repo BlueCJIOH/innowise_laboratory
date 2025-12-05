@@ -52,4 +52,4 @@ ignore = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["book_api/tests"]
+testpaths = ["tests"]

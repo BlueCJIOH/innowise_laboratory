@@ -1,4 +1,4 @@
-from book_api.tests.mocks.factories import BookInSchemaFactory
+from tests.mocks.factories import BookInSchemaFactory
 
 
 class TestBooksAPI:

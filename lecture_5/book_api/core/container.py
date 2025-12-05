@@ -22,7 +22,7 @@ def get_container() -> punq.Container:
 
 def init_container() -> punq.Container:
     container = punq.Container()
-    container.register(Database, scope=punq.Scope.singleton)
+    container.register(Database, factory=lambda: Database(), scope=punq.Scope.singleton)
     container.register(IBookRepository, SQLiteBookRepository)
     container.register(IBookService, BookService)
     container.register(GetBookListUseCase)

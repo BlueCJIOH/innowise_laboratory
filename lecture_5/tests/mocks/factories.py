@@ -1,6 +1,5 @@
 from polyfactory.factories import DataclassFactory
 from polyfactory.factories.pydantic_factory import ModelFactory
-from polyfactory.pytest_plugin import register_fixture
 
 from book_api.api.v1.schemas import BookInSchema
 from book_api.domain.commands import (
@@ -19,7 +18,6 @@ class BookFactory(DataclassFactory[Book]):
     __model__ = Book
 
 
-@register_fixture
 class BookInSchemaFactory(ModelFactory[BookInSchema]):
     __model__ = BookInSchema
 

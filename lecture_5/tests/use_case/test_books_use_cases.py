@@ -7,7 +7,7 @@ from book_api.domain.use_cases import (
     GetBookUseCase,
     UpdateBookUseCase,
 )
-from book_api.tests.mocks.factories import (
+from tests.mocks.factories import (
     BookSearchQueryFactory,
     CreateBookCommandFactory,
     DeleteBookCommandFactory,
