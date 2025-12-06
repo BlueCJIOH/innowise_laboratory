@@ -3,3 +3,8 @@
 .venv
 book_api.db
 test.db
+__pycache__/
+.pytest_cache/
+.idea/
+.venv/
+*.pyc
