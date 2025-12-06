@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from book_api.domain.services import IBookService
-from book_api.domain.use_cases import (
+from book_api.application.use_cases import (
     CreateBookUseCase,
     DeleteBookUseCase,
     GetBookListUseCase,
@@ -16,10 +16,10 @@ from book_api.domain.use_cases import (
 from book_api.gateways.sqlite.database import Database
 from book_api.gateways.sqlite.models import BaseORM
 from book_api.gateways.sqlite.repositories import IBookRepository, SQLiteBookRepository
-from book_api.services.book import BookService
+from book_api.application.services.book import BookService
 from tests.mocks.services import DummyBookService
 from book_api.main import web_app_factory
-from book_api.api.v1.dependencies import get_container
+from book_api.presentation.api.v1.dependencies import get_container
 
 
 def create_test_database() -> Database:

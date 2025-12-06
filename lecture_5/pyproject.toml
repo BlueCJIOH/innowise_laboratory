@@ -53,3 +53,7 @@ ignore = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+filterwarnings = [
+    "ignore::PendingDeprecationWarning:multipart",
+    "ignore::PendingDeprecationWarning:starlette.formparsers",
+]

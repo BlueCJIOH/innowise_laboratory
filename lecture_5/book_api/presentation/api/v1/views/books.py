@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from book_api.api.v1.schemas import (
+from book_api.presentation.api.v1.schemas import (
     ApiResponse,
     BookInSchema,
     BookOutSchema,
@@ -8,14 +8,14 @@ from book_api.api.v1.schemas import (
     ListPaginatedResponse,
     PaginationOutSchema,
 )
-from book_api.api.v1.dependencies import (
+from book_api.presentation.api.v1.dependencies import (
     get_create_book_use_case,
     get_delete_book_use_case,
     get_get_book_use_case,
     get_list_book_use_case,
     get_update_book_use_case,
 )
-from book_api.domain.commands import (
+from book_api.application.commands import (
     BookSearchQuery,
     CreateBookCommand,
     DeleteBookCommand,
@@ -25,7 +25,7 @@ from book_api.domain.commands import (
     UpdateBookCommand,
 )
 from book_api.domain.errors import BookNotFound
-from book_api.domain.use_cases import (
+from book_api.application.use_cases import (
     CreateBookUseCase,
     DeleteBookUseCase,
     GetBookListUseCase,

@@ -1,6 +1,6 @@
 import pytest
 
-from book_api.domain.use_cases import (
+from book_api.application.use_cases import (
     CreateBookUseCase,
     DeleteBookUseCase,
     GetBookListUseCase,

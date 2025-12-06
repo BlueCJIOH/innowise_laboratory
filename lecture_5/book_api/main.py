@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from book_api.api.v1.router import api_router
+from book_api.presentation.api.v1.router import api_router
 from book_api.core.container import get_container
 from book_api.gateways.sqlite.database import Database
 

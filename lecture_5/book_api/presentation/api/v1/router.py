@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from book_api.api.v1.views import books
+from book_api.presentation.api.v1.views import books
 
 
 api_router = APIRouter()

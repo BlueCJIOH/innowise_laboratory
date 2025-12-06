@@ -1,8 +1,8 @@
 from polyfactory.factories import DataclassFactory
 from polyfactory.factories.pydantic_factory import ModelFactory
 
-from book_api.api.v1.schemas import BookInSchema
-from book_api.domain.commands import (
+from book_api.presentation.api.v1.schemas import BookInSchema
+from book_api.application.commands import (
     CreateBookCommand,
     DeleteBookCommand,
     GetBookCommand,

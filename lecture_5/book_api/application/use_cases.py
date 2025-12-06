@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Tuple
 
-from book_api.domain.commands import (
+from book_api.application.commands import (
     CreateBookCommand,
     DeleteBookCommand,
     GetBookCommand,

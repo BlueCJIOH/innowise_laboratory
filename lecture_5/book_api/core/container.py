@@ -3,7 +3,7 @@ from functools import lru_cache
 import punq
 
 from book_api.domain.services import IBookService
-from book_api.domain.use_cases import (
+from book_api.application.use_cases import (
     CreateBookUseCase,
     DeleteBookUseCase,
     GetBookListUseCase,
@@ -12,7 +12,7 @@ from book_api.domain.use_cases import (
 )
 from book_api.gateways.sqlite.database import Database
 from book_api.gateways.sqlite.repositories import IBookRepository, SQLiteBookRepository
-from book_api.services.book import BookService
+from book_api.application.services.book import BookService
 
 
 @lru_cache(1)
