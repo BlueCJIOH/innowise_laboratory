@@ -33,6 +33,7 @@ from book_api.application.use_cases import (
     UpdateBookUseCase,
 )
 
+
 router = APIRouter()
 
 
@@ -63,7 +64,6 @@ def get_all_books_view(
     command: GetBookListCommand = Depends(get_all_books_command),
     use_case: GetBookListUseCase = Depends(get_list_book_use_case),
 ) -> ApiResponse[ListPaginatedResponse[BookOutSchema]]:
-    """Получить все книги (с пагинацией)."""
     books, count = use_case.execute(command)
     response = ListPaginatedResponse(
         items=[BookOutSchema.from_entity(book) for book in books],
@@ -91,7 +91,6 @@ def search_books_view(
     command: GetBookListCommand = Depends(get_search_command),
     use_case: GetBookListUseCase = Depends(get_list_book_use_case),
 ) -> ApiResponse[ListPaginatedResponse[BookOutSchema]]:
-    """Поиск книг по title, author, year."""
     books, count = use_case.execute(command)
     response = ListPaginatedResponse(
         items=[BookOutSchema.from_entity(book) for book in books],
