@@ -1,7 +1,7 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column
 
-from book_api.domain.entities import Book as BookEntity
+from book_api.domain.entities import Book
 from book_api.gateways.sqlite.models.base import BaseORM
 
 
@@ -14,7 +14,7 @@ class BookORM(BaseORM):
     year: Mapped[int | None] = mapped_column(sa.Integer, nullable=True)
 
     @staticmethod
-    def from_entity(entity: BookEntity) -> "BookORM":
+    def from_entity(entity: Book) -> "BookORM":
         return BookORM(
             id=entity.id,
             title=entity.title,
@@ -22,8 +22,8 @@ class BookORM(BaseORM):
             year=entity.year,
         )
 
-    def to_entity(self) -> BookEntity:
-        return BookEntity(
+    def to_entity(self) -> Book:
+        return Book(
             id=self.id if self.id is not None else 0,
             title=self.title,
             author=self.author,
