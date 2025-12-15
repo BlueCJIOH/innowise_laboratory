@@ -1,0 +1,10 @@
+/book_api.egg-info/
+.env
+.venv
+book_api.db
+test.db
+__pycache__/
+.pytest_cache/
+.idea/
+.venv/
+*.pyc

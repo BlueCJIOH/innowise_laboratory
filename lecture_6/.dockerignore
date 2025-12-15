@@ -1,0 +1,59 @@
+# VCS
+.git/
+.gitignore
+
+# IDE/editor
+.idea/
+.vscode/
+*.iml
+
+# Env/secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Python/packaging artifacts
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+*.egg-info/
+*.egg
+build/
+dist/
+.eggs/
+pip-wheel-metadata/
+.wheels/
+*.whl
+
+# Virtualenvs
+.venv/
+venv/
+ENV/
+env/
+
+# Tests/coverage
+tests/
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+*.log
+
+# Tool caches
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Local runtime data
+*.db
+*.sqlite*
+
+# Docs/homework files
+*.md
+Homework Docker.docx.html
+Homework Docker.txt
+tmp.md
