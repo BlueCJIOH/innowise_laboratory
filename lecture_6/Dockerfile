@@ -19,12 +19,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install -y --no-install-recommends build-essential && \
     rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-RUN python3 -c "import tomllib, pathlib; data=tomllib.loads(pathlib.Path('pyproject.toml').read_text('utf-8')); pathlib.Path('requirements.txt').write_text('\\n'.join(data['project']['dependencies'])+'\\n', encoding='utf-8')"
+COPY pyproject.toml uv.lock ./
+RUN python3 -m pip install --no-cache-dir --upgrade pip uv==0.6.12
+RUN uv export \
+      --format requirements-txt \
+      --no-dev \
+      --locked \
+      --no-emit-project \
+      --output-file requirements.lock
 
 RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
-    python3 -m pip install --upgrade pip setuptools wheel && \
-    python3 -m pip wheel --wheel-dir=/wheels -r requirements.txt
+    python3 -m pip wheel --wheel-dir=/wheels --require-hashes -r requirements.lock
 
 FROM ${PYTHON_IMAGE} AS python-deps
 
@@ -36,15 +41,16 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONUNBUFFERED=1
 
 COPY --from=wheels /wheels /wheels
-COPY --from=wheels /build/requirements.txt /build/requirements.txt
+COPY --from=wheels /build/requirements.lock /build/requirements.lock
 
 RUN --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install \
+      --require-hashes \
       --no-index --find-links=/wheels \
       --no-compile \
       --target=/opt/python \
-      -r requirements.txt
+      -r requirements.lock
 
 FROM ${DEBIAN_IMAGE} AS runtime-deps
 
@@ -83,6 +89,7 @@ USER 0:0
 
 RUN ["python3", "-c", "import os, pathlib; pathlib.Path('/data').mkdir(parents=True, exist_ok=True); os.chown('/data', 65532, 65532); pathlib.Path('/bin/ls').exists() or os.symlink('/bin/busybox', '/bin/ls')"]
 
+# distroless non-root user
 USER 65532:65532
 
 EXPOSE 8000
