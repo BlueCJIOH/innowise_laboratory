@@ -2,12 +2,12 @@
 .git/
 .gitignore
 
-# IDE/editor
+# IDE
 .idea/
 .vscode/
 *.iml
 
-# Env/secrets
+# env/secrets
 .env
 .env.*
 *.pem
@@ -27,13 +27,13 @@ pip-wheel-metadata/
 .wheels/
 *.whl
 
-# Virtualenvs
+# venvs
 .venv/
 venv/
 ENV/
 env/
 
-# Tests/coverage
+# tests/coverage
 tests/
 .pytest_cache/
 .tox/
@@ -43,17 +43,14 @@ tests/
 htmlcov/
 *.log
 
-# Tool caches
+# tool caches
 .mypy_cache/
 .ruff_cache/
 .cache/
 
-# Local runtime data
+# local runtime data
 *.db
 *.sqlite*
 
-# Docs/homework files
-*.md
-Homework Docker.docx.html
-Homework Docker.txt
-tmp.md
+# docs
+*.MD
